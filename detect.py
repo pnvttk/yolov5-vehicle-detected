@@ -30,8 +30,19 @@ import platform
 import sys
 from pathlib import Path
 
+# import mysql.connector
+
 import torch
 import torch.backends.cudnn as cudnn
+
+# mydb = mysql.connector.connect(
+#   host="localhost",
+#   user="root",
+#   password="",
+#   database="database_name"
+# )
+
+# print(mydb)
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -152,8 +163,12 @@ def run(
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                    # print ("line = ")
+                    # print (line)
+
 
                 # Write results
+                labelCount = 0
                 for *xyxy, conf, cls in reversed(det):
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
@@ -161,9 +176,40 @@ def run(
                         with open(f'{txt_path}.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
+                            param1 = 0
+                            param25 = []  
+                            param = []
+                            
+                            count = 0
+                            for l in line :
+                                if count == 0 :
+                                    param.append(str(int(l)))
+                                    print ("l = ")
+                                    print (str(l))
+                                else :
+                                    param.append(str(l))
+                                count = count + 1
+                            print ("param = ", param)
+                            # print ("param1 = ", param1)
+                            # print ("param25 = ", param25)
+
+                            # mycursor = mydb.cursor()
+
+                            # sql = "INSERT INTO detect (class, center_x, center_y, width, height) VALUES (%s, %s, %s, %s ,%s)"
+                            # val = (int(param[0]), float(param[1]), float(param[2]), float(param[3]), float(param[4]))
+                            # mycursor.execute(sql, val)
+
+                            # mydb.commit()
+
+                            # print(mycursor.rowcount, "record inserted.")
+
+
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
+                        if labelCount == 0 :
+                            xyxy[0] = xyxy[2] / 2
+                            labelCount = labelCount + 1
                         annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
