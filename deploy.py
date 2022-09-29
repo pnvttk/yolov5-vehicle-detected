@@ -69,18 +69,17 @@ def plot_boxes(results, frame, classes):
 
             plate_num = recognize_plate_easyocr(img=frame, coords=coords, reader=EASY_OCR, region_threshold=OCR_TH)
 
-            #!
-            print("this is plate_name", plate_num) 
-
+            #############!
+            print("this is plate_name", plate_num)
 
             #! Thai font
-            img = np.zeros((200,400,3),np.uint8)
-            b,g,r,a = 0,255,0,0
-            fontpath = "font/tahoma.ttf" 
+            img = np.zeros((200, 400, 3), np.uint8)
+            b, g, r, a = 0, 255, 0, 0
+            fontpath = "font/tahoma.ttf"
             font = ImageFont.truetype(fontpath, 32)
             img_pil = Image.fromarray(img)
             draw = ImageDraw.Draw(img_pil)
-            draw.text((50, 80),str(plate_num), font = font, fill = (b, g, r, a))
+            draw.text((50, 80), str(plate_num), font=font, fill=(b, g, r, a))
             img = np.array(img_pil)
 
             # if text_d == 'mask':
@@ -136,7 +135,7 @@ def filter_text(region, ocr_result, region_threshold):
 #         win_text = win_text=win_text+unichr(0x0020)+unichr(0x0020)
 #     except:
 #         win_text = results + " "
-#     fontpath = "D:\projects\vehicle-detect\yolov5\font\angsana.ttc" 
+#     fontpath = "D:\projects\vehicle-detect\yolov5\font\angsana.ttc"
 #     font = ImageFont.truetype(fontpath, 32)
 #     image_pil = Image.new("RGB", (150,26),(0,0,0))
 #     draw = ImageDraw.Draw(image_pil)
@@ -144,21 +143,22 @@ def filter_text(region, ocr_result, region_threshold):
 
 # ---------------------------------------------- Main function -----------------------------------------------------
 
+
 def main(img_path=None, vid_path=None, vid_out=None):
 
     print(f"[INFO] Loading model... ")
     # loading the custom trained model
     # model =  torch.hub.load('ultralytics/yolov5', 'custom', path='last.pt',force_reload=True) ## if you want to download the git repo and then run the detection
-    # wsl
+
+    ########! wsl
     # model = torch.hub.load('/mnt/d/projects/vehicle-detect/yolov5', 'custom', source='local',
     #                        path='/mnt/d/projects/vehicle-detect/yolov5/pt/yolov5l.pt', force_reload=True)  # The repo is stored locally
-    # win
+
+    ########! win
     model = torch.hub.load(r'D:\projects\vehicle-detect\yolov5', 'custom', source='local',
                            path=r'D:\projects\vehicle-detect\yolov5\pt\yolov5l.pt', force_reload=True)  # The repo is stored locally
 
     classes = model.names  # class names in string format
-
-    
 
     # --------------- for detection on image --------------------
     if img_path != None:
@@ -169,7 +169,6 @@ def main(img_path=None, vid_path=None, vid_out=None):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         results = detectx(frame, model=model)  # DETECTION HAPPENING HERE
-        
 
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
@@ -248,5 +247,8 @@ def main(img_path=None, vid_path=None, vid_out=None):
 # main(vid_path="./test_images/vid_1.mp4",vid_out="vid_1.mp4") ### for custom video
 # main(vid_path=0,vid_out="webcam_facemask_result.mp4") #### for webcam
 
+##! wsl
 # main(img_path="/mnt/d/projects/vehicle-detect/detect/test/19-01-2020-12-44-08881-57187888-1-99.jpg")  # for image
+
+##! win
 main(img_path=r"D:\projects\vehicle-detect\detect\test\19-01-2020-12-47-43313-62955486-1-92.jpg")  # for image
